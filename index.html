@@ -1,0 +1,654 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f6fbfe">
+<link rel="apple-touch-icon" href="icon.png">
+<title>ゆるねこごきげんメモ 完成版</title>
+<style>
+:root{
+  --bg:#f6fbfe;--paper:#fff;--ink:#2f4357;--muted:#72879a;--line:#dce9f1;
+  --blue:#a7cfe4;--blue-strong:#6ca9cb;--blue-soft:#eaf5fb;--lav:#f0edfa;
+  --pink:#fbecef;--mint:#ecf7f3;--cream:#fff8ee;--shadow:0 12px 28px rgba(71,112,139,.12)
+}
+*{box-sizing:border-box} html{background:var(--bg)}
+body{margin:0;min-height:100vh;color:var(--ink);font-family:ui-rounded,"Hiragino Maru Gothic ProN","Hiragino Sans","Yu Gothic",system-ui,sans-serif;background:radial-gradient(circle at 8% 0%,#fff7ef 0,transparent 25%),radial-gradient(circle at 100% 0%,#edf7fb 0,transparent 30%),linear-gradient(#fbfdff,#f5fafc);padding:14px 12px calc(96px + env(safe-area-inset-bottom))}
+button,input,select,textarea{font:inherit}button{cursor:pointer}
+.app{max-width:760px;margin:0 auto}.view{display:none}.view.active{display:block}
+.top{display:flex;align-items:center;gap:12px;padding:7px 4px 14px}
+.top-cat{width:72px;height:86px;object-fit:cover;border-radius:22px;background:#fff;box-shadow:var(--shadow);flex:none}
+h1{margin:0 0 5px;font-size:27px;line-height:1.12;font-weight:900;color:#3d302f}.top p{margin:0;font-size:13px;font-weight:800;color:#50677a}.top .sub{margin-top:2px;color:var(--blue-strong)}
+.card{background:rgba(255,255,255,.96);border:1px solid var(--line);border-radius:25px;padding:17px;margin:13px 0;box-shadow:var(--shadow)}
+.section-title{font-size:17px;font-weight:900;color:#2e6e98;margin-bottom:12px}
+.weight-card{background:linear-gradient(145deg,#fff,#edf7fb)}.weight-row{display:flex;align-items:flex-end;gap:7px}.weight-num{font-size:67px;line-height:.9;font-weight:900;color:#2f75a3;letter-spacing:-.05em}.weight-unit{font-size:23px;font-weight:900;color:#2f75a3;margin-bottom:5px}
+.diff{display:inline-block;margin-top:13px;border-radius:999px;padding:8px 14px;background:#fff1cf;font-size:14px;font-weight:900;color:#6a4b2f}.diff.up{background:#fff0f0;color:#b45f68}.diff.down{background:#e8f5fb;color:#397ba2}
+.message-card{background:linear-gradient(145deg,#fffdf9,#fff7ef)}.message-wrap{display:grid;grid-template-columns:104px 1fr;gap:12px;align-items:end}.mascot{width:104px;border-radius:20px;display:block}.bubble{position:relative;background:#fff;border-radius:23px;padding:17px 18px;min-height:112px;box-shadow:0 9px 22px rgba(100,77,50,.08);font-size:16px;font-weight:800;line-height:1.72;white-space:pre-line}.bubble:before{content:"";position:absolute;left:-12px;bottom:28px;border-top:11px solid transparent;border-bottom:11px solid transparent;border-right:15px solid #fff}
+.torisetsu-card{background:linear-gradient(145deg,var(--mint),#fff)}.torisetsu-card ul{margin:0;padding-left:21px;line-height:1.75;font-weight:780}
+.home-actions{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin:13px 0}.action{border:1px solid var(--line);border-radius:22px;padding:16px;text-align:left;box-shadow:var(--shadow);min-height:104px;color:var(--ink);background:#fff}.action strong{display:block;font-size:18px;margin:7px 0 3px}.action small{color:var(--muted);font-weight:750}.action.record{background:linear-gradient(145deg,var(--pink),#fff)}.action.diary{background:linear-gradient(145deg,var(--lav),#fff)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.stat{background:#fff;border:1px solid var(--line);border-radius:20px;padding:13px 8px;text-align:center;box-shadow:0 8px 20px rgba(70,117,146,.08)}.stat span{display:block;font-size:12px;font-weight:850;color:#61778a}.stat strong{display:block;font-size:21px;color:#2d658d;margin:7px 0 2px}.stat small{font-size:11px;color:var(--muted);font-weight:750}
+.quote-card{display:flex;align-items:center;gap:12px;background:linear-gradient(145deg,#eaf5fb,#fff)}.quote-card img{width:58px;height:58px;object-fit:cover;border-radius:18px}.quote-card p{margin:0;font-size:16px;line-height:1.65;font-weight:850}.quote-title{margin-bottom:5px}
+h2{margin:0 0 4px;font-size:20px}.helper{margin:0 0 14px;font-size:13px;color:var(--muted);font-weight:750}
+label{display:block;margin:12px 0 6px;font-size:13px;color:#65798c;font-weight:850}
+input,select,textarea{width:100%;margin-top:5px;padding:13px;border:1px solid var(--line);border-radius:16px;background:#fff;color:var(--ink);outline:none}
+input:focus,select:focus,textarea:focus{border-color:var(--blue-strong);box-shadow:0 0 0 3px rgba(167,207,228,.28)}
+.weight-input{font-size:30px;font-weight:900;text-align:center}.choice-title{font-size:15px;font-weight:900;margin:15px 0 8px}.choice-title small{font-size:12px;color:var(--muted);font-weight:750;margin-left:4px}
+.choices{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}.choices button{border:1px solid var(--line);border-radius:15px;padding:11px 5px;background:#fff;color:var(--ink);font-weight:850}.choices button.selected{background:var(--blue-soft);border-color:var(--blue-strong)}
+.check-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.check{border:1px solid var(--line);border-radius:15px;padding:11px;background:#fff;display:flex;gap:8px;align-items:center;font-size:13px;font-weight:800;color:var(--ink);margin:0}.check input{width:auto;margin:0}
+.btn-row{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:14px 0}.btn{border:0;border-radius:18px;padding:14px;font-weight:900;color:#27475c}.primary{background:var(--blue)}.secondary{background:var(--blue-soft)}.danger{background:#ffe5e5;color:#8f4d4d}.full{width:100%}
+.sticky-buttons{position:sticky;bottom:78px;background:rgba(246,251,254,.92);padding:8px;border-radius:20px;backdrop-filter:blur(10px);z-index:5}
+.diary-item{padding:12px 0;border-top:1px solid var(--line)}.diary-item:first-child{border-top:0}.diary-button{width:100%;border:0;background:transparent;padding:0;display:grid;grid-template-columns:72px 1fr;gap:10px;text-align:left;color:var(--ink)}.diary-date{font-weight:900;color:#477b9f}.diary-main strong{font-size:18px}.diary-main div{font-size:13px;color:var(--muted);font-weight:750;margin-top:3px}
+.pill{display:inline-block;background:var(--blue-soft);border:1px solid var(--line);border-radius:999px;padding:4px 8px;margin:2px 3px 2px 0;font-size:12px}.detail-block{border-top:1px dashed var(--line);padding:11px 0;line-height:1.75}.detail-block:first-child{border-top:0}
+.overlay{position:fixed;inset:0;background:rgba(234,245,251,.95);display:none;place-items:center;z-index:30;padding:20px}.overlay.show{display:grid}.overlay-box{text-align:center}.overlay-box img{width:180px;border-radius:28px;box-shadow:var(--shadow)}.overlay-box .paw{font-size:38px;margin-top:10px}.overlay-box h3{font-size:21px}
+.nav{position:fixed;left:50%;bottom:10px;transform:translateX(-50%);width:min(760px,calc(100% - 20px));display:grid;grid-template-columns:repeat(3,1fr);gap:4px;padding:7px;background:rgba(255,255,255,.93);border:1px solid var(--line);border-radius:24px;box-shadow:var(--shadow);backdrop-filter:blur(12px);z-index:10}.nav button{border:0;background:transparent;border-radius:17px;padding:9px 4px;color:#778b9c;font-weight:900}.nav button.active{background:var(--blue-soft);color:#257eb7}.empty{text-align:center;color:var(--muted);font-weight:800;padding:20px}
+.version{text-align:center;color:#7d8e9b;font-size:12px;font-weight:800;padding:12px 0 2px}
+@media(max-width:520px){.home-actions{grid-template-columns:1fr}.message-wrap{grid-template-columns:84px 1fr}.mascot{width:84px}.bubble{font-size:15px;padding:15px}.weight-num{font-size:60px}}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <img class="top-cat" src="icon.png" alt="">
+    <div>
+      <h1>ゆるねこごきげんメモ</h1>
+      <p>今日の体重は、昨日の暮らしからのおたより。</p>
+      <p class="sub">あこちゃんだけのトリセツを育てるメモ。</p>
+    </div>
+  </header>
+
+  <main>
+    <section id="homeView" class="view active">
+      <section class="card weight-card">
+        <div class="section-title">☀️ 今日の体重</div>
+        <div class="weight-row"><div id="homeWeight" class="weight-num">--.-</div><div class="weight-unit">kg</div></div>
+        <div id="homeDiff" class="diff">まだ記録がないよ</div>
+      </section>
+
+      <section class="card message-card">
+        <div class="section-title">つむぎからのメッセージ</div>
+        <div class="message-wrap">
+          <img class="mascot" src="icon.png" alt="">
+          <div id="tsumugiMessage" class="bubble">まだ観察を始めたばかり。今日から少しずつ紡いでいこうね</div>
+        </div>
+      </section>
+
+      <section class="card torisetsu-card">
+        <div class="section-title">あこちゃんトリセツ</div>
+        <ul id="torisetsuList"><li>まだ観察中。つむぎ、虫めがねを温めています</li></ul>
+      </section>
+
+      <div class="home-actions">
+        <button id="recordButton" class="action record" type="button"><span>☀️</span><strong>今日を記録する</strong><small>体重・昨日の暮らし・体の声</small></button>
+        <button id="diaryButton" class="action diary" type="button"><span>📖</span><strong>観察日記を見る</strong><small>過去のおたよりを読み返す</small></button>
+      </div>
+
+      <section class="stats">
+        <div class="stat"><span>体重変化</span><strong id="statChange">--</strong><small>過去7日</small></div>
+        <div class="stat"><span>平均体重</span><strong id="statAvg">--</strong><small>過去30日</small></div>
+        <div class="stat"><span>記録日数</span><strong id="statDays">0日</strong><small>少しずつ</small></div>
+      </section>
+
+      <section class="card quote-card">
+        <img src="icon.png" alt="">
+        <div><div class="section-title quote-title">今日のひとこと</div><p id="todayQuote">正解より、観察。今日もそれで十分</p></div>
+      </section>
+    </section>
+
+    <section id="formView" class="view">
+      <section class="card">
+        <h2>☀️ 今日の体重</h2>
+        <p class="helper">朝起きて、トイレ後に測った体重。</p>
+        <form id="entryForm">
+          <label>日付<input id="dateInput" type="date" required></label>
+          <label>体重（kg）<input id="weightInput" class="weight-input" type="number" step="0.1" min="20" max="200" required></label>
+
+          <h2 style="margin-top:22px">🫧 今朝の体の声</h2>
+          <p class="helper">今日はどんな感じ？</p>
+
+          <div class="choice-title">身体の重さ <small>全身</small></div>
+          <div class="choices" data-group="body"><button type="button" data-value="軽い">軽い</button><button type="button" data-value="普通">普通</button><button type="button" data-value="重い">重い</button></div>
+          <div class="choice-title">胃の具合 <small>胃もたれ・消化</small></div>
+          <div class="choices" data-group="stomach"><button type="button" data-value="スッキリ">スッキリ</button><button type="button" data-value="普通">普通</button><button type="button" data-value="重い">重い</button></div>
+          <div class="choice-title">腸のタプタプ感 <small>お腹ポンポン</small></div>
+          <div class="choices" data-group="belly"><button type="button" data-value="なし">なし</button><button type="button" data-value="少し">少し</button><button type="button" data-value="ある">ある</button></div>
+          <div class="choice-title">脚の張り・むくみ感 <small>ふくらはぎ</small></div>
+          <div class="choices" data-group="legs"><button type="button" data-value="軽い">軽い</button><button type="button" data-value="普通">普通</button><button type="button" data-value="張ってる">張ってる</button></div>
+
+          <h2 style="margin-top:22px">🌙 昨日の暮らし</h2>
+          <p class="helper">昨日はどんな一日だった？</p>
+          <label>睡眠時間<select id="sleepInput" required><option value="">選ぶ</option><option value="4">4時間</option><option value="5">5時間</option><option value="6">6時間</option><option value="7">7時間</option><option value="8">8時間</option><option value="9">9時間</option></select></label>
+
+          <div class="choice-title">便</div>
+          <div class="choices" data-group="bowel"><button type="button" data-value="なし">なし</button><button type="button" data-value="普通">普通</button><button type="button" data-value="バナナ">バナナ</button></div>
+
+          <div class="check-grid" style="margin-top:14px">
+            <label class="check"><input class="eventCheck" type="checkbox" value="体育館8時間">体育館8時間</label>
+            <label class="check"><input class="eventCheck" type="checkbox" value="体育館4.5時間">体育館4.5時間</label>
+            <label class="check"><input class="eventCheck" type="checkbox" value="耳鼻科">耳鼻科</label>
+            <label class="check"><input class="eventCheck" type="checkbox" value="テニス">テニス</label>
+            <label class="check"><input class="eventCheck" type="checkbox" value="Dダンス">Dダンス</label>
+            <label class="check"><input class="eventCheck" type="checkbox" value="推しダンス">推しダンス</label>
+            <label class="check"><input class="eventCheck" type="checkbox" value="家エアロ">家エアロ</label>
+            <label class="check"><input class="eventCheck" type="checkbox" value="ウォーキング">ウォーキング</label>
+          </div>
+
+          <label>歩数<input id="stepsInput" type="number" min="0" step="1"></label>
+
+          <h2 style="margin-top:22px">🍽️ 食事・メモ</h2>
+          <p class="helper">思い当たることがあれば。</p>
+          <div class="check-grid">
+            <label class="check"><input id="eatingOutInput" type="checkbox">外食</label>
+            <label class="check"><input id="snackInput" type="checkbox">いつも以外の間食</label>
+          </div>
+          <label>メモ<textarea id="memoInput" rows="4"></textarea></label>
+
+          <div class="sticky-buttons btn-row">
+            <button class="btn primary" type="submit">保存する</button>
+            <button id="cancelButton" class="btn secondary" type="button">ホームへ戻る</button>
+          </div>
+        </form>
+      </section>
+    </section>
+
+    <section id="diaryView" class="view">
+      <section class="card">
+        <h2>📖 観察日記</h2>
+        <p class="helper">その朝につむぎから届いた言葉も、一緒に残ります。</p>
+        <div id="diaryList"></div>
+        <button id="diaryHomeButton" class="btn secondary full" type="button">ホームへ戻る</button>
+      </section>
+    </section>
+
+    <section id="detailView" class="view">
+      <section class="card">
+        <h2 id="detailTitle">観察日記</h2>
+        <div id="detailContent"></div>
+        <div class="btn-row"><button id="editButton" class="btn primary" type="button">編集する</button><button id="deleteButton" class="btn danger" type="button">削除する</button></div>
+        <button id="detailBackButton" class="btn secondary full" type="button">観察日記へ戻る</button>
+      </section>
+    </section>
+  </main>
+
+  <div class="version">完成版：自動控え・復元つき</div>
+</div>
+
+<div id="savedOverlay" class="overlay">
+  <div class="overlay-box"><img src="icon.png" alt=""><div class="paw">🐾</div><h3>今日のおたより、受け取ったよ</h3></div>
+</div>
+
+<nav class="nav">
+  <button class="navButton active" data-target="homeView" type="button">🏠 ホーム</button>
+  <button class="navButton" data-target="formView" type="button">☀️ 記録</button>
+  <button class="navButton" data-target="diaryView" type="button">📖 観察日記</button>
+</nav>
+
+<script>(function(){
+"use strict";
+
+var KEY = "yuruneko_gokigen_memo_v1";
+var BACKUP_TIME_KEY = "yuruneko_gokigen_backup_time_v2";
+var editingDate = null;
+var detailDate = null;
+
+var quotes = [
+  "正解より、観察。今日もそれで十分",
+  "数字は結果。昨日の暮らしを、ゆっくり読もう",
+  "変わらない日も、ちゃんとおたよりです",
+  "一日ぶんの数字で、全部を決めなくていい",
+  "体は毎日ちがう。だから今日も面白い",
+  "わからないまま観察を続けても大丈夫",
+  "昨日の自分は、今日の敵じゃない",
+  "理由の糸は、あとから見つかることもある",
+  "増えた数字より、続けていることのほうが大きい",
+  "今日も、体の声をひとつ拾えたら十分",
+  "焦らなくて大丈夫。あこちゃんのペースでいこう"
+];
+
+function byId(id){ return document.getElementById(id); }
+
+function todayString(){
+  var d = new Date();
+  d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+  return d.toISOString().slice(0,10);
+}
+
+function hashText(s){
+  var h = 0;
+  s = String(s || "");
+  for(var i=0;i<s.length;i++) h = (h * 31 + s.charCodeAt(i)) >>> 0;
+  return h;
+}
+
+function getEntries(){
+  var a;
+  try{ a = JSON.parse(localStorage.getItem(KEY) || "[]"); }
+  catch(e){ a = []; }
+  if(!Array.isArray(a)) a = [];
+  return a.sort(function(x,y){ return String(x.date).localeCompare(String(y.date)); });
+}
+
+function saveEntries(a){
+  a = Array.isArray(a) ? a : [];
+  a.sort(function(x,y){ return String(x.date).localeCompare(String(y.date)); });
+  localStorage.setItem(KEY, JSON.stringify(a));
+}
+
+function showView(id){
+  var views = document.querySelectorAll(".view");
+  for(var i=0;i<views.length;i++){
+    views[i].classList.toggle("active", views[i].id === id);
+  }
+  var navs = document.querySelectorAll(".navButton");
+  for(var j=0;j<navs.length;j++){
+    navs[j].classList.toggle("active", navs[j].getAttribute("data-target") === id);
+  }
+  if(id === "homeView") renderHome();
+  if(id === "diaryView") renderDiary();
+  window.scrollTo(0,0);
+}
+
+function previousEntry(date){
+  var a = getEntries(), prev = null;
+  for(var i=0;i<a.length;i++){
+    if(a[i].date < date) prev = a[i];
+  }
+  return prev;
+}
+
+function change(e){
+  var p = previousEntry(e.date);
+  return p ? Number(e.weight) - Number(p.weight) : null;
+}
+
+function changeText(d){
+  if(d === null || !Number.isFinite(d)) return "最初の記録";
+  if(Math.abs(d) < 0.05) return "前回と同じ";
+  return d > 0 ? "前回より +" + d.toFixed(1) + "kg" : "前回より " + d.toFixed(1) + "kg";
+}
+
+function setChoice(group,value){
+  var buttons = document.querySelectorAll('.choices[data-group="'+group+'"] button');
+  for(var i=0;i<buttons.length;i++){
+    buttons[i].classList.toggle("selected", buttons[i].getAttribute("data-value") === value);
+  }
+}
+
+function getChoice(group){
+  var b = document.querySelector('.choices[data-group="'+group+'"] button.selected');
+  return b ? b.getAttribute("data-value") : "";
+}
+
+function defaultForm(){
+  editingDate = null;
+  if(byId("dateInput")) byId("dateInput").value = todayString();
+  if(byId("weightInput")) byId("weightInput").value = "";
+  if(byId("sleepInput")) byId("sleepInput").value = "";
+  setChoice("body","普通");
+  setChoice("stomach","普通");
+  setChoice("belly","なし");
+  setChoice("legs","普通");
+  setChoice("bowel","普通");
+  var checks = document.querySelectorAll(".eventCheck");
+  for(var i=0;i<checks.length;i++) checks[i].checked = false;
+  if(byId("stepsInput")) byId("stepsInput").value = "";
+  if(byId("eatingOutInput")) byId("eatingOutInput").checked = false;
+  if(byId("snackInput")) byId("snackInput").checked = false;
+  if(byId("memoInput")) byId("memoInput").value = "";
+}
+
+function readForm(){
+  var checked = document.querySelectorAll(".eventCheck:checked");
+  var events = [];
+  for(var i=0;i<checked.length;i++) events.push(checked[i].value);
+  return {
+    date: byId("dateInput").value,
+    weight: Number(byId("weightInput").value),
+    sleep: Number(byId("sleepInput").value),
+    body: getChoice("body"),
+    stomach: getChoice("stomach"),
+    belly: getChoice("belly"),
+    legs: getChoice("legs"),
+    bowel: getChoice("bowel"),
+    events: events,
+    steps: byId("stepsInput").value ? Number(byId("stepsInput").value) : null,
+    eatingOut: byId("eatingOutInput").checked,
+    extraSnack: byId("snackInput").checked,
+    memo: byId("memoInput").value.trim()
+  };
+}
+
+function rareNya(date){ return hashText(date + ":nya") % 18 === 0; }
+
+function messageFor(e){
+  var d = change(e);
+  var up = d !== null && d >= 0.3;
+  var down = d !== null && d <= -0.3;
+  var ev = e.events || [];
+  var ending = rareNya(e.date) ? "にゃ" : "よ";
+
+  if(ev.indexOf("耳鼻科") >= 0 &&
+     (ev.indexOf("体育館8時間") >= 0 || ev.indexOf("体育館4.5時間") >= 0) && up)
+    return "昨日は耳鼻科と体育館の合わせ技だったね。\n今日の重さは、忙しい一日の名残かもしれないよ";
+  if(e.bowel === "なし" && e.belly === "ある")
+    return "昨日は便なしで、今朝はお腹もタプタプ気味。\n今日の数字には、お腹の在庫も少し入っていそう" + ending;
+  if(ev.indexOf("テニス") >= 0 && e.legs === "張ってる" && up)
+    return "昨日はテニスで、今朝は脚も張っているね。\n今日の重さは、よく動いた日の続きかもしれないよ";
+  if(e.bowel === "なし")
+    return "昨日は便なしの日だったね。\n今日の体重には、お腹の在庫も少し入っているかもしれない" + ending;
+  if(e.bowel === "バナナ" && down)
+    return "ありがとう。\n今日のおなかは、昨日よりごきげんそう";
+  if(e.belly === "ある")
+    return "今朝はお腹にタプタプ感がある日。\n今日は水分をためこんでいるかもしれない" + ending;
+  if(e.legs === "張ってる")
+    return "今朝は脚が張っている日。\n体重だけじゃなく、ふくらはぎのおたよりも届いてるね";
+  if(e.stomach === "重い")
+    return "今朝は胃が重めの日。\n今日の数字と一緒に、胃のおたよりも覚えておこう";
+  if(ev.indexOf("テニス") >= 0 && up)
+    return "昨日はテニスの日だったね。\n今日の重さは、その続きかもしれないよ";
+  if(ev.indexOf("体育館8時間") >= 0 && up)
+    return "昨日は体育館8時間の日だったね。\n今日の数字には、長い勤務の余韻も入っていそう";
+  if(e.eatingOut && up)
+    return "昨日は外食の日だったね。\n今日の数字は、楽しく食べた日の余韻かもしれないよ";
+  if(e.extraSnack && up)
+    return "昨日は、いつも以外の間食があった日。\n今日の数字は、少し様子見でよさそう";
+  if(e.sleep <= 6 && up)
+    return "昨日の睡眠は短めだったね。\n今日の重さと、眠りの短さを一緒に観察しておこう";
+  if(e.steps !== null && e.steps >= 10000)
+    return "昨日はよく歩いたね。\n数字より先に、体がその一日を覚えていそう";
+  if(e.steps !== null && e.steps <= 1500)
+    return "昨日は、ほとんど歩かなかった日だったね。\n動かなかった日も、ちゃんと観察の一日です";
+  if(e.body === "軽い" && !up)
+    return "今朝の体は軽めだったね。\n数字だけじゃなく、体の声もちゃんと届いてるよ";
+  if(down) return "今日は少し軽めのおたより。\n昨日の暮らしが、静かに整っていたのかもしれないね";
+  if(up) return "今日は少し重めのおたより。\n昨日の暮らしに、理由の糸があるかもしれないよ";
+  return "今日の体重は大きく揺れていないね。\nいつものリズムが続いているおたよりかもしれないよ";
+}
+
+function quoteFor(date){ return quotes[hashText(date + ":quote") % quotes.length]; }
+
+function average(a){
+  if(!a.length) return null;
+  var sum = 0;
+  for(var i=0;i<a.length;i++) sum += a[i];
+  return sum / a.length;
+}
+
+function trend(label,predicate){
+  var a = getEntries(), diffs = [];
+  for(var i=0;i<a.length;i++){
+    if(!predicate(a[i])) continue;
+    var d = change(a[i]);
+    if(d !== null) diffs.push(d);
+  }
+  if(diffs.length < 3) return null;
+  var av = average(diffs);
+  if(Math.abs(av) < 0.15) return null;
+  return {label:label,count:diffs.length,average:av};
+}
+
+function torisetsu(){
+  var a = getEntries();
+  if(a.length < 4) return ["まだ観察を始めたばかり。もう少しすると、あこちゃんらしい傾向が見えてきそう"];
+  var candidates = [
+    trend("テニスの日",function(e){return (e.events||[]).indexOf("テニス")>=0;}),
+    trend("体育館8時間の日",function(e){return (e.events||[]).indexOf("体育館8時間")>=0;}),
+    trend("体育館4.5時間の日",function(e){return (e.events||[]).indexOf("体育館4.5時間")>=0;}),
+    trend("耳鼻科の日",function(e){return (e.events||[]).indexOf("耳鼻科")>=0;}),
+    trend("Dダンスの日",function(e){return (e.events||[]).indexOf("Dダンス")>=0;}),
+    trend("推しダンスの日",function(e){return (e.events||[]).indexOf("推しダンス")>=0;}),
+    trend("家エアロの日",function(e){return (e.events||[]).indexOf("家エアロ")>=0;}),
+    trend("ウォーキングの日",function(e){return (e.events||[]).indexOf("ウォーキング")>=0;}),
+    trend("便なしの日",function(e){return e.bowel==="なし";}),
+    trend("腸のタプタプ感がある日",function(e){return e.belly==="ある";}),
+    trend("脚が張っている日",function(e){return e.legs==="張ってる";}),
+    trend("胃が重い日",function(e){return e.stomach==="重い";}),
+    trend("睡眠6時間以下の日",function(e){return e.sleep<=6;}),
+    trend("外食の日",function(e){return e.eatingOut;}),
+    trend("いつも以外の間食の日",function(e){return e.extraSnack;})
+  ].filter(Boolean);
+  candidates.sort(function(x,y){return Math.abs(y.average)-Math.abs(x.average);});
+  if(!candidates.length) return [a.length<8 ? "少しずつ記録が育っているよ。つむぎ、まだ観察中です" : "大きなクセはまだ出ていないみたい。揺れが少ないのも、ひとつのトリセツだね"];
+  return candidates.slice(0,3).map(function(x){
+    return x.label+"は、平均"+(x.average>0?"+":"")+x.average.toFixed(1)+"kgのおたより（"+x.count+"回）";
+  });
+}
+
+function renderHome(){
+  var a=getEntries(), e=a.length?a[a.length-1]:null, d, last30, av, last7;
+  if(e){
+    byId("homeWeight").textContent=Number(e.weight).toFixed(1);
+    d=change(e);
+    byId("homeDiff").textContent=changeText(d);
+    byId("homeDiff").className="diff "+(d>0?"up":d<0?"down":"");
+    byId("tsumugiMessage").textContent=e.message||messageFor(e);
+    byId("todayQuote").textContent=e.quote||quoteFor(e.date);
+  }else{
+    byId("homeWeight").textContent="--.-";
+    byId("homeDiff").textContent="まだ記録がないよ";
+    byId("tsumugiMessage").textContent="まだ観察を始めたばかり。今日から少しずつ紡いでいこうね";
+    byId("todayQuote").textContent=quoteFor(todayString());
+  }
+  byId("torisetsuList").innerHTML=torisetsu().map(function(x){return "<li>"+x+"</li>";}).join("");
+  byId("statDays").textContent=a.length+"日";
+  last30=a.slice(Math.max(0,a.length-30));
+  av=average(last30.map(function(x){return Number(x.weight);}));
+  byId("statAvg").textContent=av===null?"--":av.toFixed(1)+"kg";
+  last7=a.slice(Math.max(0,a.length-7));
+  if(last7.length<2) byId("statChange").textContent="--";
+  else{
+    d=Number(last7[last7.length-1].weight)-Number(last7[0].weight);
+    byId("statChange").textContent=(d>=0?"+":"")+d.toFixed(1)+"kg";
+  }
+  updateBackupStatus();
+}
+
+function keyword(e){
+  if(e.bowel==="なし") return "便なし";
+  if(e.bowel==="バナナ") return "すっきり";
+  if((e.events||[]).indexOf("テニス")>=0) return "テニスの日";
+  if((e.events||[]).indexOf("体育館8時間")>=0) return "体育館8時間";
+  if((e.events||[]).indexOf("体育館4.5時間")>=0) return "体育館4.5時間";
+  if(e.eatingOut) return "外食";
+  if(e.extraSnack) return "間食あり";
+  if(e.belly==="ある") return "タプタプ";
+  if(e.legs==="張ってる") return "脚の張り";
+  return "いつもの観察";
+}
+
+function renderDiary(){
+  var a=getEntries().slice().reverse(), html="";
+  if(!a.length){ byId("diaryList").innerHTML='<div class="empty">まだ観察日記は空っぽだよ。</div>'; return; }
+  for(var i=0;i<a.length;i++){
+    var e=a[i];
+    html+='<div class="diary-item"><button class="diary-button" type="button" data-date="'+e.date+'">'+
+      '<div class="diary-date">'+Number(e.date.slice(5,7))+'/'+Number(e.date.slice(8))+'</div>'+
+      '<div class="diary-main"><strong>'+Number(e.weight).toFixed(1)+'kg</strong> '+changeText(change(e))+
+      '<div>'+keyword(e)+'</div></div></button></div>';
+  }
+  byId("diaryList").innerHTML=html;
+  var buttons=document.querySelectorAll(".diary-button");
+  for(var j=0;j<buttons.length;j++) buttons[j].addEventListener("click",function(){openDetail(this.getAttribute("data-date"));});
+}
+
+function openDetail(date){
+  var a=getEntries(), e=null;
+  for(var i=0;i<a.length;i++) if(a[i].date===date){e=a[i];break;}
+  if(!e)return;
+  detailDate=date;
+  byId("detailTitle").textContent=Number(date.slice(5,7))+"月"+Number(date.slice(8))+"日の観察";
+  byId("detailContent").innerHTML=
+    '<div class="detail-block"><strong>'+Number(e.weight).toFixed(1)+'kg　'+changeText(change(e))+'</strong></div>'+
+    '<div class="detail-block"><strong>つむぎ</strong><br>'+String(e.message||messageFor(e)).replace(/\n/g,"<br>")+'</div>'+
+    '<div class="detail-block"><strong>今日のひとこと</strong><br>'+(e.quote||quoteFor(e.date))+'</div>'+
+    '<div class="detail-block"><strong>今朝の体の声</strong><br>身体：'+e.body+' / 胃：'+e.stomach+'<br>腸：'+e.belly+' / 脚：'+e.legs+'</div>'+
+    '<div class="detail-block"><strong>昨日の暮らし</strong><br>睡眠：'+e.sleep+'時間 / 便：'+e.bowel+'<br>'+
+      (e.events||[]).map(function(x){return '<span class="pill">'+x+'</span>';}).join("")+
+      '<br>歩数：'+(e.steps===null?"-":e.steps)+'歩</div>'+
+    '<div class="detail-block"><strong>食事・メモ</strong><br>外食：'+(e.eatingOut?"あり":"なし")+
+      ' / いつも以外の間食：'+(e.extraSnack?"あり":"なし")+'<br>'+
+      (e.memo?e.memo.replace(/\n/g,"<br>"):"メモなし")+'</div>';
+  showView("detailView");
+}
+
+function fillForm(e){
+  editingDate=e.date;
+  byId("dateInput").value=e.date;
+  byId("weightInput").value=e.weight;
+  byId("sleepInput").value=e.sleep;
+  setChoice("body",e.body); setChoice("stomach",e.stomach); setChoice("belly",e.belly); setChoice("legs",e.legs); setChoice("bowel",e.bowel);
+  var checks=document.querySelectorAll(".eventCheck");
+  for(var i=0;i<checks.length;i++) checks[i].checked=(e.events||[]).indexOf(checks[i].value)>=0;
+  byId("stepsInput").value=e.steps===null?"":e.steps;
+  byId("eatingOutInput").checked=!!e.eatingOut;
+  byId("snackInput").checked=!!e.extraSnack;
+  byId("memoInput").value=e.memo||"";
+}
+
+function backupTimestamp(){
+  var d=new Date();
+  return d.getFullYear()+String(d.getMonth()+1).padStart(2,"0")+String(d.getDate()).padStart(2,"0")+"-"+
+    String(d.getHours()).padStart(2,"0")+String(d.getMinutes()).padStart(2,"0")+String(d.getSeconds()).padStart(2,"0");
+}
+
+function downloadBackup(reason){
+  var entries=getEntries();
+  var payload={
+    app:"ゆるねこごきげんメモ",
+    version:2,
+    exportedAt:new Date().toISOString(),
+    reason:reason||"手動控え",
+    count:entries.length,
+    entries:entries
+  };
+  var blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json"});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement("a");
+  a.href=url;
+  a.download="gokigen-backup-"+backupTimestamp()+".json";
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(function(){URL.revokeObjectURL(url);},1500);
+  localStorage.setItem(BACKUP_TIME_KEY,String(Date.now()));
+  updateBackupStatus();
+}
+
+function updateBackupStatus(){
+  var el=byId("backupStatus");
+  if(!el)return;
+  var t=Number(localStorage.getItem(BACKUP_TIME_KEY)||0);
+  if(!t){el.textContent="控え：まだありません";return;}
+  var d=new Date(t);
+  el.textContent="最新の控え："+(d.getMonth()+1)+"/"+d.getDate()+" "+String(d.getHours()).padStart(2,"0")+":"+String(d.getMinutes()).padStart(2,"0");
+}
+
+function restoreBackup(file){
+  var reader=new FileReader();
+  reader.onload=function(){
+    try{
+      var parsed=JSON.parse(reader.result);
+      var data=Array.isArray(parsed)?parsed:(parsed&&Array.isArray(parsed.entries)?parsed.entries:null);
+      if(!data)throw new Error("形式が違います");
+      var current=getEntries();
+      if(!confirm("控えファイル "+data.length+"日分を読み込みます。\n現在の記録 "+current.length+"日分は、同じ日付なら控え側で置き換えます。\n進めますか？"))return;
+      var map={};
+      current.forEach(function(x){map[x.date]=x;});
+      data.forEach(function(x){if(x&&x.date)map[x.date]=x;});
+      saveEntries(Object.keys(map).map(function(k){return map[k];}));
+      renderHome(); renderDiary();
+      downloadBackup("復元後");
+      alert(data.length+"日分を読み込みました。復元後の控えも作りました。");
+    }catch(err){
+      alert("このファイルは読み込めませんでした。");
+    }
+  };
+  reader.readAsText(file);
+}
+
+function injectBackupPanel(){
+  if(byId("backupPanel"))return;
+  var home=byId("homeView");
+  if(!home)return;
+  var panel=document.createElement("section");
+  panel.id="backupPanel";
+  panel.className="card";
+  panel.style.background="linear-gradient(145deg,#fff8ee,#ffffff)";
+  panel.innerHTML=
+    '<div class="section-title">🛟 控えと復元</div>'+
+    '<p class="helper">記録を保存するたび、写真なしの軽い控えファイルを自動で作ります。Safariの「履歴とWebサイトデータを消去」をしても、この控えから戻せます。</p>'+
+    '<div id="backupStatus" style="font-weight:900;color:#477b9f;margin:10px 0">控え：まだありません</div>'+
+    '<div class="btn-row">'+
+      '<button id="manualBackupButton" class="btn primary" type="button">今の控えを作る</button>'+
+      '<label class="btn secondary" style="display:block;text-align:center;margin:0">控えから復元<input id="restoreFileInput" type="file" accept=".json,application/json" style="display:none"></label>'+
+    '</div>';
+  var firstAction=home.querySelector(".home-actions");
+  if(firstAction) home.insertBefore(panel,firstAction);
+  else home.appendChild(panel);
+  byId("manualBackupButton").addEventListener("click",function(){downloadBackup("手動控え");});
+  byId("restoreFileInput").addEventListener("change",function(){
+    if(this.files&&this.files[0])restoreBackup(this.files[0]);
+    this.value="";
+  });
+  updateBackupStatus();
+}
+
+function bind(){
+  var choiceButtons=document.querySelectorAll(".choices button");
+  for(var i=0;i<choiceButtons.length;i++){
+    choiceButtons[i].addEventListener("click",function(){
+      var parent=this.closest(".choices");
+      var bs=parent.querySelectorAll("button");
+      for(var k=0;k<bs.length;k++)bs[k].classList.remove("selected");
+      this.classList.add("selected");
+    });
+  }
+  if(byId("recordButton"))byId("recordButton").addEventListener("click",function(){defaultForm();showView("formView");});
+  if(byId("diaryButton"))byId("diaryButton").addEventListener("click",function(){showView("diaryView");});
+  if(byId("cancelButton"))byId("cancelButton").addEventListener("click",function(){showView("homeView");});
+  if(byId("diaryHomeButton"))byId("diaryHomeButton").addEventListener("click",function(){showView("homeView");});
+  if(byId("detailBackButton"))byId("detailBackButton").addEventListener("click",function(){showView("diaryView");});
+  if(byId("editButton"))byId("editButton").addEventListener("click",function(){
+    var a=getEntries();
+    for(var i=0;i<a.length;i++)if(a[i].date===detailDate){fillForm(a[i]);showView("formView");return;}
+  });
+  if(byId("deleteButton"))byId("deleteButton").addEventListener("click",function(){
+    if(!detailDate)return;
+    if(confirm("この日の観察を削除する？")){
+      saveEntries(getEntries().filter(function(x){return x.date!==detailDate;}));
+      downloadBackup("削除後");
+      renderHome();showView("diaryView");
+    }
+  });
+  var navButtons=document.querySelectorAll(".navButton");
+  for(var j=0;j<navButtons.length;j++)navButtons[j].addEventListener("click",function(){
+    var target=this.getAttribute("data-target");
+    if(target==="formView")defaultForm();
+    showView(target);
+  });
+  if(byId("entryForm"))byId("entryForm").addEventListener("submit",function(ev){
+    ev.preventDefault();
+    var e=readForm();
+    if(!e.date||!Number.isFinite(e.weight)||!e.sleep){alert("日付・体重・睡眠時間を入れてね");return;}
+    e.message=messageFor(e); e.quote=quoteFor(e.date);
+    var a=getEntries().filter(function(x){return x.date!==e.date&&x.date!==editingDate;});
+    a.push(e); saveEntries(a); editingDate=null;
+    downloadBackup("記録保存");
+    if(byId("savedOverlay"))byId("savedOverlay").classList.add("show");
+    setTimeout(function(){
+      if(byId("savedOverlay"))byId("savedOverlay").classList.remove("show");
+      renderHome();showView("homeView");
+      alert("保存しました。控えファイルも作りました。続けて「ダウンロード」を押してください。");
+    },700);
+  });
+}
+
+document.addEventListener("DOMContentLoaded",function(){
+  injectBackupPanel();
+  bind();
+  defaultForm();
+  renderHome();
+  showView("homeView");
+});
+})();</script>
+</body>
+</html>
